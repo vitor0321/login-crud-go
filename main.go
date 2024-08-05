@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"log"
-
+	"example.com/mod/src/configuration/logger"
 	"example.com/mod/src/controller/routes"
 
 	"github.com/gin-gonic/gin"
@@ -11,9 +9,10 @@ import (
 )
 
 func main() {
+	logger.Info("Starting the application")
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Println("Error loading .env file")
+		logger.Error("Error loading .env file", err)
 	}
 
 	route := gin.Default()
@@ -21,6 +20,6 @@ func main() {
 	routes.InitRoutes(route)
 
 	if err := route.Run(":8080"); err != nil {
-		log.Fatal(err)
+		logger.Error("Error running the server", err)
 	}
 }
