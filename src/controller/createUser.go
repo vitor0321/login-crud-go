@@ -1,14 +1,18 @@
 package controller
 
 import (
-	"strconv"
+	"net/http"
 
 	"example.com/mod/src/configuration/logger"
 	"example.com/mod/src/configuration/validation"
 	"example.com/mod/src/controller/model/request"
+	"example.com/mod/src/model"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+)
 
+var (
+	UserDomainInterface model.UserDomainInterface
 )
 
 func CreateUser(c *gin.Context) {
@@ -23,5 +27,14 @@ func CreateUser(c *gin.Context) {
 		c.JSON(restErr.Code, restErr)
 		return
 	}
-	logger.Info("User created success: "+userRequest.Email+" "+userRequest.Name+" "+strconv.Itoa(int(userRequest.Age)), zap.String("journey", "CreateUser"))
+
+	domain := model.NewUserDomain(userRequest.Email, userRequest.Password, userRequest.Name, userRequest.Age)
+	if err := domain.CreateUser(); err != nil {
+		logger.Error("Error trying to create user", err, zap.String("journey", "CreateUser"))
+		c.JSON(err.Code, err)
+		return
+	}
+
+	logger.Info("User created success", zap.String("journey", "CreateUser"))
+	c.String(http.StatusOK, "")
 }
