@@ -20,13 +20,13 @@ var (
 )
 
 func init() {
-	logger.Info("Init Validate user", zap.String("journey", "ValidateUser"))
+	logger.Info("Init Validate user", zap.String("journey", "configuration/validate_user"))
 	if val, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		en := en.New()
 		unt := ut.New(en, en)
 		transl, _ = unt.GetTranslator("en")
 		en_translations.RegisterDefaultTranslations(val, transl)
-		logger.Info("Validator engine started", zap.String("journey", "ValidateUser"))
+		logger.Info("Validator engine started", zap.String("journey", "configuration/validate_user"))
 	}
 }
 
@@ -36,16 +36,16 @@ func ValidateUserError(
 
 	var jsonErr *json.UnmarshalTypeError
 	var jsonValidationError validator.ValidationErrors
-	logger.Error("Error trying to validate user info", validation_err, zap.String("journey", "ValidateUser"))
+	logger.Error("Error trying to validate user info", validation_err, zap.String("journey", "configuration/validate_user"))
 
 	if ok := errors.As(validation_err, &jsonErr); ok {
 
-		logger.Error("Error trying to convert field", jsonErr, zap.String("journey", "ValidateUser"))
+		logger.Error("Error trying to convert field", jsonErr, zap.String("journey", "configuration/validate_user"))
 		return rest_err.NewBadRequestError("Invalid field type")
 
 	} else if ok := errors.As(validation_err, &jsonValidationError); ok {
 
-		logger.Error("Error trying to convert field", jsonValidationError, zap.String("journey", "ValidateUser"))
+		logger.Error("Error trying to convert field", jsonValidationError, zap.String("journey", "configuration/validate_user"))
 		errorsCauses := []rest_err.Causes{}
 
 		for _, err := range validation_err.(validator.ValidationErrors) {
@@ -54,7 +54,7 @@ func ValidateUserError(
 				Field:   err.Field(),
 			}
 
-			logger.Error("Error trying to convert field cause"+causes.Field+causes.Message, nil, zap.String("journey", "ValidateUser"))
+			logger.Error("Error trying to convert field cause"+causes.Field+causes.Message, nil, zap.String("journey", "configuration/validate_user"))
 			errorsCauses = append(errorsCauses, causes)
 		}
 
@@ -62,7 +62,7 @@ func ValidateUserError(
 
 	} else {
 
-		logger.Error("Error trying to convert field", validation_err, zap.String("journey", "ValidateUser"))
+		logger.Error("Error trying to convert field", validation_err, zap.String("journey", "configuration/validate_user"))
 		return rest_err.NewBadRequestError("Error trying to convert field")
 	}
 }

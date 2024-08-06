@@ -1,4 +1,4 @@
-package model
+package service
 
 import (
 	"example.com/mod/src/configuration/logger"
@@ -6,7 +6,9 @@ import (
 	"go.uber.org/zap"
 )
 
-func (*UserDomain) DeleteUser(string) *rest_err.RestErr {
+func (*userDomainService) DeleteUser(
+	userId string,
+) *rest_err.RestErr {
 	logger.Info("Init DeleteUser model", zap.String("journey", "DeleteUser"))
 	return nil
 }

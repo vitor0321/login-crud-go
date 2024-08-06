@@ -3,9 +3,16 @@ package model
 import (
 	"crypto/md5"
 	"encoding/hex"
-
-	"example.com/mod/src/configuration/rest_err"
 )
+
+type UserDomainInterface interface {
+	GetEmail() string
+	GetPassword() string
+	GetName() string
+	GetAge() int16
+
+	EncryptPassword()
+}
 
 func NewUserDomain(
 	email,
@@ -13,31 +20,40 @@ func NewUserDomain(
 	name string,
 	age int16,
 ) UserDomainInterface {
-	return &UserDomain{
-		Email:    email,
-		Password: password,
-		Name:     name,
-		Age:      age,
+	return &userDomain{
+		email:    email,
+		password: password,
+		name:     name,
+		age:      age,
 	}
 }
 
-type UserDomain struct {
-	Email    string
-	Password string
-	Name     string
-	Age      int16
+type userDomain struct {
+	email    string
+	password string
+	name     string
+	age      int16
 }
 
-func (ud *UserDomain) EncryptPassword() {
+func (ud *userDomain) GetEmail() string {
+	return ud.email
+}
+
+func (ud *userDomain) GetPassword() string {
+	return ud.password
+}
+
+func (ud *userDomain) GetName() string {
+	return ud.name
+}
+
+func (ud *userDomain) GetAge() int16 {
+	return ud.age
+}
+
+func (ud *userDomain) EncryptPassword() {
 	hash := md5.New()
 	defer hash.Reset()
-	hash.Write([]byte(ud.Password))
-	ud.Password = hex.EncodeToString(hash.Sum(nil))
-}
-
-type UserDomainInterface interface {
-	CreateUser() *rest_err.RestErr
-	UpdateUser(string) *rest_err.RestErr
-	FindUserById(string) (*UserDomain, *rest_err.RestErr)
-	DeleteUser(string) *rest_err.RestErr
+	hash.Write([]byte(ud.password))
+	ud.password = hex.EncodeToString(hash.Sum(nil))
 }
