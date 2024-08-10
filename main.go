@@ -17,6 +17,7 @@ func main() {
 	if err != nil {
 		logger.Error("Error loading .env file", err, zap.String("journey", "main"))
 	}
+
 	//Init dependencies
 	service := service.NewUserDomainService()
 	userController := controller.NewUserControllerInterface(service)

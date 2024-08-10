@@ -10,7 +10,9 @@ import (
 
 var (
 	log *zap.Logger
+)
 
+const (
 	LOG_OUTPUT = "LOG_OUTPUT"
 	LOG_LEVEL  = "LOG_LEVEL"
 )
