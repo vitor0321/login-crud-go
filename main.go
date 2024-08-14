@@ -1,9 +1,14 @@
 package main
 
 import (
+	"context"
+	"log"
+
+	"example.com/mod/src/configuration/database/mongodb"
 	"example.com/mod/src/configuration/logger"
 	"example.com/mod/src/controller"
 	"example.com/mod/src/controller/routes"
+	"example.com/mod/src/model/repository"
 	"example.com/mod/src/model/service"
 	"go.uber.org/zap"
 
@@ -17,9 +22,15 @@ func main() {
 	if err != nil {
 		logger.Error("Error loading .env file", err, zap.String("journey", "main"))
 	}
+	database, err := mongodb.NewMongoDBConnection(context.Background())
+	if err != nil {
+		log.Fatalf("Error connecting to database, error=%s \n", err.Error())
+		return
+	}
 
 	//Init dependencies
-	service := service.NewUserDomainService()
+	repo := repository.NewUserRepository(database)
+	service := service.NewUserDomainService(repo)
 	userController := controller.NewUserControllerInterface(service)
 
 	route := gin.Default()
